@@ -1,0 +1,223 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 96%; /* Gris claro institucional */
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%; /* Mantener tarjetas blancas para contraste */
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 204 73% 41%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 220 16% 96%; /* Gris neutro institucional */
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 220 16% 96%; /* Gris neutro institucional */
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 220 16% 96%; /* Gris neutro institucional */
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%; /* Bordes suaves */
+    --input: 214.3 31.8% 91.4%; /* Inputs suaves */
+    --ring: 204 73% 41%;
+
+    --radius: 0.5rem;
+
+    /* Colores institucionales PBA */
+    --pba-blue: #417099;
+    --pba-cyan: #00aec3;
+    --pba-pink: #e81f76;
+
+    /* Nuevos colores de fondo neutros */
+    --soft-bg: 220 20% 96%; /* Fondo principal neutro */
+    --soft-card: 0 0% 100%; /* Tarjetas blancas */
+    --soft-card-hover: 220 16% 96%; /* Hover neutro */
+    --soft-accent: 214 15% 91%; /* Acentos azul muy claro */
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 204 73% 41%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 204 73% 41%;
+
+    /* Colores suaves para modo oscuro */
+    --soft-bg: 222.2 84% 4.9%;
+    --soft-card: 217.2 32.6% 17.5%;
+    --soft-card-hover: 217.2 32.6% 20%;
+    --soft-accent: 217.2 32.6% 15%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Clases de utilidad para colores PBA */
+@layer utilities {
+  .text-pba-blue {
+    color: var(--pba-blue);
+  }
+
+  .text-pba-cyan {
+    color: var(--pba-cyan);
+  }
+
+  .text-pba-pink {
+    color: var(--pba-pink);
+  }
+
+  .bg-pba-blue {
+    background-color: var(--pba-blue);
+  }
+
+  .bg-pba-cyan {
+    background-color: var(--pba-cyan);
+  }
+
+  .bg-pba-pink {
+    background-color: var(--pba-pink);
+  }
+
+  .border-pba-blue {
+    border-color: var(--pba-blue);
+  }
+
+  .border-pba-cyan {
+    border-color: var(--pba-cyan);
+  }
+
+  .border-pba-pink {
+    border-color: var(--pba-pink);
+  }
+
+  /* Nuevas clases para fondos suaves */
+  .bg-soft {
+    background-color: hsl(var(--soft-bg));
+  }
+
+  .bg-soft-card {
+    background-color: hsl(var(--soft-card));
+  }
+
+  .bg-soft-card-hover {
+    background-color: hsl(var(--soft-card-hover));
+  }
+
+  .bg-soft-accent {
+    background-color: hsl(var(--soft-accent));
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Animaciones personalizadas */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out;
+}
+
+/* Mejoras de accesibilidad y UX */
+.focus-visible:focus {
+  outline: 2px solid var(--pba-cyan);
+  outline-offset: 2px;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8fafc;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--pba-cyan);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--pba-blue);
+}
+
+/* Estilos específicos para inputs */
+input[type="text"],
+input[type="search"],
+input[type="email"],
+input[type="tel"],
+input[type="number"] {
+  @apply bg-gray-100 focus:bg-white transition-colors duration-200 border-gray-200 focus:border-pba-cyan focus:ring-pba-blue;
+}

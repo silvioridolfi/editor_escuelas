@@ -105,14 +105,20 @@ export default function DatosGeneralesForm({ datos, onChange }: DatosGeneralesFo
         transition={{ duration: 0.3, delay }}
         className="space-y-4"
       >
-        <Card className="rounded-xl border-gray-200 bg-white">
-          <CardHeader className="pb-3">
+        <Card className="rounded-xl border-gray-200 bg-white hover:border-pba-cyan/50 transition-colors duration-200 group relative overflow-hidden">
+          {/* Efecto de brillo sutil en hover */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-pba-cyan/5 to-pba-blue/5 opacity-0 group-hover:opacity-100"
+            transition={{ duration: 0.3 }}
+          />
+
+          <CardHeader className="pb-3 relative z-10">
             <CardTitle className="flex items-center gap-2 text-pba-blue text-lg">
               <Icon className="h-5 w-5" />
               {title}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 relative z-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {fields.map((field, index) => (
                 <motion.div
@@ -122,11 +128,23 @@ export default function DatosGeneralesForm({ datos, onChange }: DatosGeneralesFo
                   transition={{ duration: 0.2, delay: delay + index * 0.05 }}
                 >
                   <Card
-                    className={`rounded-lg border-gray-200 hover:border-pba-cyan/50 transition-colors duration-200 bg-gray-50/50 ${
+                    className={`rounded-lg border-gray-200 hover:border-pba-cyan/50 transition-colors duration-200 bg-gray-50/50 group relative overflow-hidden ${
                       field.name === "alias" ? "border-pba-cyan/30 bg-blue-50/20" : ""
                     } ${field.name === "nombre" && field.editable ? "border-green-200/50 bg-green-50/20" : ""}`}
                   >
-                    <CardContent className="p-3">
+                    {/* Efecto de brillo para campos especiales */}
+                    {(field.name === "alias" || (field.name === "nombre" && field.editable)) && (
+                      <motion.div
+                        className={`absolute inset-0 ${
+                          field.name === "alias"
+                            ? "bg-gradient-to-r from-pba-cyan/10 to-pba-blue/10"
+                            : "bg-gradient-to-r from-green-500/10 to-emerald-500/10"
+                        } opacity-0 group-hover:opacity-100 rounded-lg`}
+                        transition={{ duration: 0.3 }}
+                      />
+                    )}
+
+                    <CardContent className="p-3 relative z-10">
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
                           <Label htmlFor={field.name} className="text-pba-blue font-medium text-sm">
@@ -134,10 +152,14 @@ export default function DatosGeneralesForm({ datos, onChange }: DatosGeneralesFo
                             {field.required && <span className="text-pba-pink ml-1">*</span>}
                           </Label>
                           {field.name === "nombre" && field.editable && (
-                            <div className="flex items-center gap-1">
+                            <motion.div
+                              className="flex items-center gap-1"
+                              animate={{ scale: [1, 1.05, 1] }}
+                              transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                            >
                               <Edit className="h-3 w-3 text-green-600" />
                               <span className="text-xs text-green-600 font-medium">Editable</span>
-                            </div>
+                            </motion.div>
                           )}
                           {field.readonly && (
                             <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">Solo lectura</span>
@@ -152,12 +174,12 @@ export default function DatosGeneralesForm({ datos, onChange }: DatosGeneralesFo
                           placeholder={field.placeholder}
                           value={datos[field.name as keyof Establecimiento] || ""}
                           onChange={handleChange}
-                          className={`border-gray-200 focus:border-pba-cyan focus:ring-pba-blue rounded-lg text-sm ${
+                          className={`border-gray-200 focus:border-pba-cyan focus:ring-pba-blue rounded-lg text-sm transition-colors duration-200 ${
                             field.readonly
                               ? "bg-gray-100 text-gray-500"
                               : field.name === "nombre" && field.editable
                                 ? "bg-green-50 border-green-200 focus:border-green-400 focus:ring-green-300"
-                                : ""
+                                : "bg-gray-100 focus:bg-white"
                           }`}
                           disabled={field.readonly}
                         />
@@ -200,8 +222,14 @@ export default function DatosGeneralesForm({ datos, onChange }: DatosGeneralesFo
       {/* Información destacada del alias */}
       {datos.alias && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-          <Card className="rounded-xl border-pba-cyan/30 bg-blue-50/30">
-            <CardContent className="p-4">
+          <Card className="rounded-xl border-pba-cyan/30 bg-blue-50/30 group relative overflow-hidden">
+            {/* Efecto de brillo en hover */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-pba-cyan/10 to-pba-blue/10 opacity-0 group-hover:opacity-100 rounded-xl"
+              transition={{ duration: 0.3 }}
+            />
+
+            <CardContent className="p-4 relative z-10">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-pba-cyan/20 rounded-lg">
                   <Hash className="h-4 w-4 text-pba-cyan" />
@@ -221,8 +249,14 @@ export default function DatosGeneralesForm({ datos, onChange }: DatosGeneralesFo
 
       {/* Aviso sobre campos editables */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-        <Card className="rounded-xl border-green-200/50 bg-green-50/30">
-          <CardContent className="p-4">
+        <Card className="rounded-xl border-green-200/50 bg-green-50/30 group relative overflow-hidden">
+          {/* Efecto de brillo en hover */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 rounded-xl"
+            transition={{ duration: 0.3 }}
+          />
+
+          <CardContent className="p-4 relative z-10">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-green-200/50 rounded-lg">
                 <Edit className="h-4 w-4 text-green-600" />
@@ -256,14 +290,20 @@ export default function DatosGeneralesForm({ datos, onChange }: DatosGeneralesFo
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.4 }}
       >
-        <Card className="rounded-xl border-gray-200 bg-white">
-          <CardHeader className="pb-3">
+        <Card className="rounded-xl border-gray-200 bg-white hover:border-pba-cyan/50 transition-colors duration-200 group relative overflow-hidden">
+          {/* Efecto de brillo en hover */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-pba-cyan/5 to-pba-blue/5 opacity-0 group-hover:opacity-100"
+            transition={{ duration: 0.3 }}
+          />
+
+          <CardHeader className="pb-3 relative z-10">
             <CardTitle className="flex items-center gap-2 text-pba-blue text-lg">
               <FileText className="h-5 w-5" />
               Observaciones Adicionales
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative z-10">
             <div className="space-y-2">
               <Label htmlFor="observaciones" className="text-pba-blue font-medium">
                 Observaciones

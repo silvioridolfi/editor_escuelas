@@ -237,7 +237,7 @@ export default function ProgramasEducativosForm({ cue, nombreEscuela }: Programa
           </CardHeader>
 
           <CardContent className="space-y-6">
-            {/* Lista de programas con checkboxes */}
+            {/* Lista de programas con checkboxes mejorados */}
             <div className="space-y-3">
               {PROGRAMAS_DISPONIBLES.map((programa, index) => {
                 const isSelected = programasSeleccionados.includes(programa)
@@ -251,35 +251,63 @@ export default function ProgramasEducativosForm({ cue, nombreEscuela }: Programa
                     transition={{ duration: 0.2, delay: index * 0.05 }}
                   >
                     <Card
-                      className={`rounded-lg border-gray-200 hover:border-pba-cyan/50 transition-all duration-200 cursor-pointer ${
+                      className={`rounded-lg border-gray-200 hover:border-pba-cyan/50 transition-all duration-200 cursor-pointer group relative overflow-hidden ${
                         isSelected ? "bg-pba-cyan/5 border-pba-cyan/30" : "bg-gray-50/50"
                       }`}
                     >
-                      <CardContent className="p-4">
+                      {/* Efecto de brillo en hover */}
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-pba-cyan/5 to-pba-blue/5 opacity-0 group-hover:opacity-100"
+                        transition={{ duration: 0.3 }}
+                      />
+
+                      <CardContent className="p-4 relative z-10">
                         <div className="flex items-center space-x-3">
-                          <Checkbox
-                            id={`programa-${index}`}
-                            checked={isSelected}
-                            onCheckedChange={(checked) => handleProgramaChange(programa, checked as boolean)}
-                            className="data-[state=checked]:bg-pba-cyan data-[state=checked]:border-pba-cyan"
-                          />
+                          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                            <Checkbox
+                              id={`programa-${index}`}
+                              checked={isSelected}
+                              onCheckedChange={(checked) => {
+                                handleProgramaChange(programa, checked as boolean)
+                                // Animación de éxito al marcar/desmarcar
+                                if (checked) {
+                                  // Efecto de "pop" al marcar
+                                }
+                              }}
+                              className="data-[state=checked]:bg-pba-cyan data-[state=checked]:border-pba-cyan transition-all duration-200"
+                            />
+                          </motion.div>
 
                           <div className="flex items-center gap-3 flex-1">
-                            <div className={`p-2 rounded-lg ${isSelected ? "bg-pba-cyan/20" : "bg-gray-200"}`}>
-                              <Icon className={`h-4 w-4 ${isSelected ? "text-pba-cyan" : "text-gray-500"}`} />
-                            </div>
+                            <motion.div
+                              className={`p-2 rounded-lg transition-all duration-200 ${isSelected ? "bg-pba-cyan/20" : "bg-gray-200"}`}
+                              whileHover={{ scale: 1.05 }}
+                            >
+                              <Icon
+                                className={`h-4 w-4 transition-colors duration-200 ${isSelected ? "text-pba-cyan" : "text-gray-500"}`}
+                              />
+                            </motion.div>
 
                             <div className="flex-1">
                               <Label
                                 htmlFor={`programa-${index}`}
-                                className={`cursor-pointer font-medium ${isSelected ? "text-pba-blue" : "text-gray-700"}`}
+                                className={`cursor-pointer font-medium transition-colors duration-200 ${isSelected ? "text-pba-blue" : "text-gray-700"}`}
                               >
                                 {programa}
                               </Label>
                             </div>
 
                             {isSelected && (
-                              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.2 }}>
+                              <motion.div
+                                initial={{ scale: 0, rotate: -180 }}
+                                animate={{ scale: 1, rotate: 0 }}
+                                transition={{
+                                  type: "spring",
+                                  stiffness: 300,
+                                  damping: 20,
+                                  duration: 0.3,
+                                }}
+                              >
                                 <CheckCircle className="h-5 w-5 text-pba-cyan" />
                               </motion.div>
                             )}
@@ -300,9 +328,15 @@ export default function ProgramasEducativosForm({ cue, nombreEscuela }: Programa
                   <Label className="text-pba-blue font-semibold">Programas seleccionados:</Label>
                   <div className="flex flex-wrap gap-2">
                     {programasSeleccionados.map((programa) => (
-                      <Badge key={programa} className={getProgramaBadgeColor(programa)}>
-                        {programa}
-                      </Badge>
+                      <motion.div
+                        key={programa}
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        whileHover={{ scale: 1.05 }}
+                      >
+                        <Badge className={getProgramaBadgeColor(programa)}>{programa}</Badge>
+                      </motion.div>
                     ))}
                   </div>
                 </div>
@@ -313,37 +347,56 @@ export default function ProgramasEducativosForm({ cue, nombreEscuela }: Programa
             <Separator />
             <div className="flex items-center justify-end gap-3">
               {hasChanges && (
-                <Button
-                  variant="outline"
-                  onClick={handleResetear}
-                  disabled={isSaving}
-                  className="rounded-lg bg-transparent"
-                >
-                  Cancelar
-                </Button>
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Button
+                    variant="outline"
+                    onClick={handleResetear}
+                    disabled={isSaving}
+                    className="rounded-lg bg-transparent"
+                  >
+                    Cancelar
+                  </Button>
+                </motion.div>
               )}
 
-              <Button
-                onClick={handleGuardarProgramas}
-                disabled={!hasChanges || isSaving}
-                className={`rounded-lg font-semibold shadow-lg transition-all duration-200 ${
-                  hasChanges
-                    ? "bg-pba-cyan hover:bg-pba-cyan/90 text-white"
-                    : "bg-gray-200 text-gray-500 cursor-not-allowed"
-                }`}
-              >
-                {isSaving ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Guardando...
-                  </>
-                ) : (
-                  <>
-                    <Save className="mr-2 h-4 w-4" />
-                    Guardar Programas
-                  </>
-                )}
-              </Button>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button
+                  onClick={handleGuardarProgramas}
+                  disabled={!hasChanges || isSaving}
+                  className={`rounded-lg font-semibold shadow-lg transition-all duration-200 relative overflow-hidden group ${
+                    hasChanges
+                      ? "bg-pba-cyan hover:bg-pba-cyan/90 text-white"
+                      : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                  }`}
+                >
+                  {isSaving ? (
+                    <>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                        className="mr-2"
+                      >
+                        <Loader2 className="h-4 w-4" />
+                      </motion.div>
+                      Guardando...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-4 w-4" />
+                      Guardar Programas
+                      {/* Efecto de brillo en hover */}
+                      {hasChanges && (
+                        <motion.div
+                          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100"
+                          initial={{ x: "-100%" }}
+                          whileHover={{ x: "100%" }}
+                          transition={{ duration: 0.6 }}
+                        />
+                      )}
+                    </>
+                  )}
+                </Button>
+              </motion.div>
             </div>
           </CardContent>
         </Card>

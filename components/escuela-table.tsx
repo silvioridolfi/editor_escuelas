@@ -15,14 +15,8 @@ interface EscuelaTableProps {
 
 export default function EscuelaTable({ escuelas, onSelectEscuela }: EscuelaTableProps) {
   return (
-    <Card className="rounded-2xl shadow-lg border-0 bg-white backdrop-blur-sm border-t-4 border-t-pba-blue relative overflow-hidden group">
-      {/* Efecto de brillo en hover */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-pba-blue/5 to-pba-cyan/5 opacity-0 group-hover:opacity-100"
-        transition={{ duration: 0.3 }}
-      />
-
-      <CardContent className="p-0 relative z-10">
+    <Card className="rounded-2xl shadow-lg border-0 bg-white backdrop-blur-sm border-t-4 border-t-pba-blue">
+      <CardContent className="p-0">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -55,14 +49,11 @@ export default function EscuelaTable({ escuelas, onSelectEscuela }: EscuelaTable
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}
-                    className="border-gray-100 hover:bg-slate-50/60 transition-colors duration-200 group"
-                    whileHover={{ backgroundColor: "rgba(248, 250, 252, 0.8)" }}
+                    className="border-gray-100 hover:bg-slate-50/60 transition-colors duration-200"
                   >
                     <TableCell className="font-semibold text-pba-blue">
                       <div className="flex flex-col">
-                        <motion.span whileHover={{ x: 2 }} transition={{ duration: 0.2 }}>
-                          {nombreMostrar}
-                        </motion.span>
+                        <span>{nombreMostrar}</span>
                         {esAlias && escuela.nombre && (
                           <span className="text-xs text-gray-500 font-normal">{escuela.nombre}</span>
                         )}
@@ -86,40 +77,25 @@ export default function EscuelaTable({ escuelas, onSelectEscuela }: EscuelaTable
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {escuela.fed_a_cargo && (
-                          <motion.div whileHover={{ scale: 1.05 }}>
-                            <Badge className="bg-pba-blue/10 text-pba-blue border-pba-blue/20 border-opacity-20">
-                              {escuela.fed_a_cargo}
-                            </Badge>
-                          </motion.div>
+                          <Badge className="bg-pba-blue/10 text-pba-blue border-pba-blue/20">
+                            {escuela.fed_a_cargo}
+                          </Badge>
                         )}
                         {esAlias && (
-                          <motion.div whileHover={{ scale: 1.05 }}>
-                            <Badge className="bg-pba-cyan/10 text-pba-cyan border-pba-cyan/20 text-xs border-opacity-20">
-                              Alias
-                            </Badge>
-                          </motion.div>
+                          <Badge className="bg-pba-cyan/10 text-pba-cyan border-pba-cyan/20 text-xs">Alias</Badge>
                         )}
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
-                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onSelectEscuela(escuela)}
-                          className="text-pba-cyan hover:text-pba-cyan/80 hover:bg-pba-cyan/10 rounded-lg relative overflow-hidden group"
-                        >
-                          <Eye className="mr-1 h-4 w-4" />
-                          Ver detalles
-                          {/* Efecto de brillo en hover */}
-                          <motion.div
-                            className="absolute inset-0 bg-gradient-to-r from-transparent via-pba-cyan/10 to-transparent opacity-0 group-hover:opacity-100"
-                            initial={{ x: "-100%" }}
-                            whileHover={{ x: "100%" }}
-                            transition={{ duration: 0.6 }}
-                          />
-                        </Button>
-                      </motion.div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onSelectEscuela(escuela)}
+                        className="text-pba-cyan hover:text-pba-cyan/80 hover:bg-pba-cyan/10 rounded-lg"
+                      >
+                        <Eye className="mr-1 h-4 w-4" />
+                        Ver detalles
+                      </Button>
                     </TableCell>
                   </motion.tr>
                 )

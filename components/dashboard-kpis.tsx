@@ -3,13 +3,16 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { School, MapPin, Users } from "lucide-react"
+import { School, Laptop, Tablet, Bot, Wifi, WifiOff } from "lucide-react"
 import { obtenerEstadisticasGenerales } from "@/app/actions/estadisticas-actions"
 
 interface EstadisticasGenerales {
   totalEscuelas: number
-  totalDistritos: number
-  matriculaTotal: number
+  totalNetbooks: number
+  totalTablets: number
+  totalKitsRobotica: number
+  escuelasSinConectividad: number
+  porcentajeSinConectividad: number
 }
 
 export default function DashboardKPIs() {
@@ -33,22 +36,15 @@ export default function DashboardKPIs() {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {Array(3)
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {Array(4)
           .fill(0)
           .map((_, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-            >
-              <Card className="rounded-2xl shadow-lg border-0 bg-white/90 backdrop-blur-sm animate-pulse">
-                <CardContent className="p-6">
-                  <div className="h-20 bg-gray-200 rounded"></div>
-                </CardContent>
-              </Card>
-            </motion.div>
+            <Card key={i} className="rounded-2xl shadow-lg border-0 bg-white/90 backdrop-blur-sm animate-pulse">
+              <CardContent className="p-6">
+                <div className="h-20 bg-gray-200 rounded"></div>
+              </CardContent>
+            </Card>
           ))}
       </div>
     )
@@ -74,30 +70,35 @@ export default function DashboardKPIs() {
   const kpiCards = [
     {
       title: "Total de Escuelas",
-      value: estadisticas.totalEscuelas.toLocaleString(),
+      value: estadisticas.totalEscuelas.toString(),
       icon: School,
       color: "pba-blue",
       bgColor: "bg-pba-blue",
       textColor: "text-pba-blue",
-      gradient: "from-pba-blue to-pba-cyan",
     },
     {
-      title: "Distritos",
-      value: estadisticas.totalDistritos.toLocaleString(),
-      icon: MapPin,
+      title: "Netbooks",
+      value: estadisticas.totalNetbooks.toString(),
+      icon: Laptop,
       color: "pba-cyan",
       bgColor: "bg-pba-cyan",
       textColor: "text-pba-cyan",
-      gradient: "from-pba-cyan to-green-500",
     },
     {
-      title: "Matrícula Total",
-      value: estadisticas.matriculaTotal > 0 ? estadisticas.matriculaTotal.toLocaleString() : "Sin datos",
-      icon: Users,
+      title: "Tablets",
+      value: estadisticas.totalTablets.toString(),
+      icon: Tablet,
       color: "green-600",
       bgColor: "bg-green-600",
       textColor: "text-green-600",
-      gradient: "from-green-500 to-emerald-500",
+    },
+    {
+      title: "Kits de Robótica",
+      value: estadisticas.totalKitsRobotica.toString(),
+      icon: Bot,
+      color: "purple-600",
+      bgColor: "bg-purple-600",
+      textColor: "text-purple-600",
     },
   ]
 
@@ -108,7 +109,7 @@ export default function DashboardKPIs() {
       transition={{ duration: 0.5 }}
       className="mb-8"
     >
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         {kpiCards.map((kpi, index) => {
           const Icon = kpi.icon
           return (
@@ -117,70 +118,83 @@ export default function DashboardKPIs() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ y: -8, scale: 1.02 }}
+              whileHover={{ y: -5, scale: 1.02 }}
             >
-              <Card className="rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-white/98 backdrop-blur-sm overflow-hidden group relative">
-                {/* Borde izquierdo animado con degradado */}
-                <motion.div
-                  className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${kpi.gradient}`}
-                  initial={{ height: 0 }}
-                  animate={{ height: "100%" }}
-                  transition={{ duration: 0.8, delay: index * 0.1 }}
-                />
-
-                {/* Efecto de brillo en hover */}
-                <motion.div
-                  className={`absolute inset-0 bg-gradient-to-r ${kpi.gradient} opacity-0 group-hover:opacity-5`}
-                  initial={{ x: "-100%" }}
-                  whileHover={{ x: "100%" }}
-                  transition={{ duration: 0.6 }}
-                />
-
-                <CardHeader className="pb-3 relative z-10">
+              <Card className="rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-white/98 backdrop-blur-sm border-l-4 border-l-current overflow-hidden group">
+                <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
                       {kpi.title}
                     </CardTitle>
-                    <motion.div
-                      className={`p-2 rounded-xl ${kpi.bgColor} relative overflow-hidden`}
-                      whileHover={{
-                        scale: 1.1,
-                        boxShadow: `0 0 20px ${kpi.color === "pba-blue" ? "#417099" : kpi.color === "pba-cyan" ? "#00AEC3" : "#16a34a"}40`,
-                      }}
-                      transition={{ duration: 0.2 }}
+                    <div
+                      className={`p-2 rounded-xl ${kpi.bgColor} group-hover:scale-110 transition-transform duration-200`}
                     >
-                      {/* Efecto de pulso en el icono */}
-                      <motion.div
-                        className="absolute inset-0 bg-white/20 rounded-xl"
-                        animate={{
-                          scale: [1, 1.2, 1],
-                          opacity: [0, 0.3, 0],
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: Number.POSITIVE_INFINITY,
-                          repeatDelay: 1,
-                        }}
-                      />
-                      <Icon className="h-5 w-5 text-white relative z-10" />
-                    </motion.div>
+                      <Icon className="h-5 w-5 text-white" />
+                    </div>
                   </div>
                 </CardHeader>
-                <CardContent className="pt-0 relative z-10">
-                  <motion.div
-                    className={`text-3xl font-bold ${kpi.textColor} mb-1`}
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
-                  >
-                    {kpi.value}
-                  </motion.div>
+                <CardContent className="pt-0">
+                  <div className={`text-3xl font-bold ${kpi.textColor} mb-1`}>{kpi.value}</div>
                 </CardContent>
               </Card>
             </motion.div>
           )
         })}
       </div>
+
+      {/* Tarjeta de conectividad si hay datos */}
+      {estadisticas.totalEscuelas > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          whileHover={{ y: -5, scale: 1.01 }}
+        >
+          <Card className="rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-white/98 backdrop-blur-sm border-l-4 border-l-pba-pink">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg font-bold text-pba-blue">Estado de Conectividad</CardTitle>
+                <div className="flex gap-2">
+                  <div className="p-2 rounded-xl bg-green-500">
+                    <Wifi className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="p-2 rounded-xl bg-pba-pink">
+                    <WifiOff className="h-5 w-5 text-white" />
+                  </div>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <div className="text-2xl font-bold text-green-600 mb-1">
+                    {(estadisticas.totalEscuelas - estadisticas.escuelasSinConectividad).toString()}
+                  </div>
+                  <p className="text-sm text-gray-600">Escuelas con conectividad</p>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-pba-pink mb-1">
+                    {estadisticas.escuelasSinConectividad.toString()}
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    Sin conectividad ({estadisticas.porcentajeSinConectividad.toFixed(1)}%)
+                  </p>
+                </div>
+              </div>
+
+              {/* Barra de progreso */}
+              <div className="mt-4">
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div
+                    className="bg-gradient-to-r from-green-500 to-pba-cyan h-3 rounded-full transition-all duration-1000"
+                    style={{ width: `${100 - estadisticas.porcentajeSinConectividad}%` }}
+                  ></div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
     </motion.div>
   )
 }

@@ -54,14 +54,14 @@ export async function obtenerDetallesEscuela(id: string) {
   }
 
   // Obtener contacto por CUE (ya que la tabla contactos se relaciona por CUE)
-  const { data: contacto } = await supabase.from("contactos").select("*").eq("cue", establecimiento.cue).single()
+  const { data: contacto } = await supabase.from("contactos").select("*").eq("cue", establecimiento.cue).maybeSingle()
 
   // Obtener equipamiento (crear tabla si no existe)
   const { data: equipamiento } = await supabase
     .from("equipamiento_escolar")
     .select("*")
     .eq("establecimiento_id", id)
-    .single()
+    .maybeSingle()
 
   // Parsear los campos JSON de equipamiento específico por nivel de forma segura
   let equipamientoProcessed = equipamiento

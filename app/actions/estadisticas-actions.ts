@@ -4,31 +4,23 @@ import { supabase } from "@/lib/db"
 
 export async function obtenerEstadisticasGenerales() {
   try {
-    // Obtener total de escuelas
     const { count: totalEscuelas } = await supabase.from("establecimientos").select("*", { count: "exact", head: true })
 
-    // Obtener estadísticas de equipamiento
     const { data: equipamientoData } = await supabase
       .from("equipamiento_escolar")
-      .select("netbooks, tablets, kits_robotica")
+      .select("establecimiento_id, netbooks, tablets, kits_robotica")
 
-    // Calcular totales de equipamiento
     const totalNetbooks = equipamientoData?.reduce((sum, item) => sum + (item.netbooks || 0), 0) || 0
     const totalTablets = equipamientoData?.reduce((sum, item) => sum + (item.tablets || 0), 0) || 0
     const totalKitsRobotica = equipamientoData?.reduce((sum, item) => sum + (item.kits_robotica || 0), 0) || 0
 
-    // Para el ejemplo de conectividad, asumimos que las escuelas sin equipamiento no tienen conectividad
-    // En un caso real, esto vendría de un campo específico de conectividad
-    const escuelasSinEquipamiento = await supabase
-      .from("establecimientos")
-      .select("id")
-      .not(
-        "id",
-        "in",
-        `(${equipamientoData?.map(() => "equipamiento_escolar.establecimiento_id").join(",") || "null"})`,
-      )
+    // Extraer los IDs de establecimientos que tienen equipamiento
+    const establecimientosConEquipamiento = new Set(
+      equipamientoData?.map((item) => item.establecimiento_id).filter(Boolean) || [],
+    )
 
-    const escuelasSinConectividad = escuelasSinEquipamiento.data?.length || 0
+    // Contar escuelas sin equipamiento/conectividad
+    const escuelasSinConectividad = (totalEscuelas || 0) - establecimientosConEquipamiento.size
     const porcentajeSinConectividad = totalEscuelas ? (escuelasSinConectividad / totalEscuelas) * 100 : 0
 
     return {
@@ -36,7 +28,7 @@ export async function obtenerEstadisticasGenerales() {
       totalNetbooks,
       totalTablets,
       totalKitsRobotica,
-      escuelasSinConectividad,
+      escuelasSinConectividad: Math.max(0, escuelasSinConectividad),
       porcentajeSinConectividad,
     }
   } catch (error) {

@@ -52,8 +52,8 @@ export default function DatosGeneralesForm({ datos, onChange }: DatosGeneralesFo
   // Campos de ubicación
   const locationFields = [
     { name: "direccion", label: "Dirección", type: "text", readonly: false },
-    { name: "distrito", label: "Distrito", type: "text", readonly: true },
-    { name: "ciudad", label: "Ciudad", type: "text", readonly: true },
+    { name: "distrito", label: "Distrito", type: "text", readonly: false },
+    { name: "ciudad", label: "Ciudad", type: "text", readonly: false },
     { name: "lat", label: "Latitud", type: "number", step: "any", placeholder: "Ej: -34.9214", readonly: false },
     { name: "lon", label: "Longitud", type: "number", step: "any", placeholder: "Ej: -57.9544", readonly: false },
   ]

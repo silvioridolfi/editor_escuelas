@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowLeft, Save, Trash2, AlertTriangle, User, Laptop, Building, GraduationCap, BookOpen } from "lucide-react"
+import { ArrowLeft, Save, Trash2, AlertTriangle, User, Building, GraduationCap, BookOpen } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -18,17 +18,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import type { Establecimiento, Contacto, Equipamiento } from "@/types/escuelas"
+import type { Establecimiento, Contacto } from "@/types/escuelas"
 import {
   obtenerDetallesEscuela,
-  actualizarEstablecimiento,
+  actualizarDatosGenerales,
   actualizarContacto,
-  actualizarEquipamiento,
   eliminarEscuela,
-} from "@/app/actions/escuelas-actions"
+} from "@/app/actions/escuelas"
 import DatosGeneralesForm from "@/components/forms/datos-generales-form"
 import ContactoForm from "@/components/forms/contacto-form"
-import EquipamientoForm from "@/components/forms/equipamiento-form"
 import DatosAcademicosForm from "@/components/forms/datos-academicos-form"
 import ProgramasEducativosForm from "@/components/forms/programas-educativos-form"
 
@@ -45,7 +43,6 @@ export default function EscuelaDetalles({ escuela, onClose, onUpdate, onDelete }
   const [activeTab, setActiveTab] = useState("datos-generales")
   const [datosGenerales, setDatosGenerales] = useState<Establecimiento>(escuela)
   const [contacto, setContacto] = useState<Contacto | null>(null)
-  const [equipamiento, setEquipamiento] = useState<Equipamiento | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -60,7 +57,6 @@ export default function EscuelaDetalles({ escuela, onClose, onUpdate, onDelete }
         const detalles = await obtenerDetallesEscuela(escuela.id)
         setDatosGenerales(detalles.establecimiento)
         setContacto(detalles.contacto)
-        setEquipamiento(detalles.equipamiento)
       } catch (error) {
         console.error("Error al cargar detalles:", error)
         toast({
@@ -81,19 +77,12 @@ export default function EscuelaDetalles({ escuela, onClose, onUpdate, onDelete }
   const handleSaveChanges = async () => {
     setIsSaving(true)
     try {
-      const updatedEstablecimiento = await actualizarEstablecimiento(datosGenerales)
+      const updatedEstablecimiento = await actualizarDatosGenerales(datosGenerales.id, datosGenerales)
 
       if (contacto) {
         await actualizarContacto({
           ...contacto,
           cue: datosGenerales.cue,
-        })
-      }
-
-      if (equipamiento) {
-        await actualizarEquipamiento({
-          ...equipamiento,
-          establecimiento_id: datosGenerales.id,
         })
       }
 
@@ -152,7 +141,6 @@ export default function EscuelaDetalles({ escuela, onClose, onUpdate, onDelete }
     { id: "datos-generales", label: "Datos generales", icon: Building },
     { id: "datos-academicos", label: "Datos académicos", icon: GraduationCap },
     { id: "contacto", label: "Contacto institucional", icon: User },
-    { id: "equipamiento", label: "Equipamiento", icon: Laptop },
     { id: "programas-educativos", label: "Programas Educativos", icon: BookOpen },
   ]
 
@@ -179,25 +167,6 @@ export default function EscuelaDetalles({ escuela, onClose, onUpdate, onDelete }
               }
             }
             onChange={setContacto}
-          />
-        )
-      case "equipamiento":
-        return (
-          <EquipamientoForm
-            equipamiento={
-              equipamiento || {
-                id: "",
-                establecimiento_id: datosGenerales.id,
-                netbooks: 0,
-                tablets: 0,
-                kits_robotica: 0,
-                impresoras_3d: 0,
-                otros_recursos: "",
-                programas_entregados: [],
-              }
-            }
-            establecimiento={datosGenerales}
-            onChange={setEquipamiento}
           />
         )
       case "programas-educativos":
@@ -233,8 +202,7 @@ export default function EscuelaDetalles({ escuela, onClose, onUpdate, onDelete }
               </div>
             </div>
 
-            {/* Solo mostrar botón de guardar para tabs que modifican datos */}
-            {["datos-generales", "datos-academicos", "contacto", "equipamiento"].includes(activeTab) && (
+            {["datos-generales", "datos-academicos", "contacto"].includes(activeTab) && (
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   onClick={handleSaveChanges}
@@ -334,7 +302,6 @@ export default function EscuelaDetalles({ escuela, onClose, onUpdate, onDelete }
                         <ul className="list-disc list-inside mt-3 space-y-1 text-gray-600">
                           <li>Datos del establecimiento</li>
                           <li>Información de contacto</li>
-                          <li>Datos de equipamiento</li>
                           <li>Programas educativos registrados</li>
                         </ul>
                       </AlertDialogDescription>

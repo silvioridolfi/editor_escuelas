@@ -83,7 +83,7 @@ export default function ContactoForm({ contacto, onChange }: ContactoFormProps) 
                           placeholder={field.placeholder}
                           value={contacto[field.name as keyof Contacto] || ""}
                           onChange={handleChange}
-                          className="border-gray-200 focus:border-pba-cyan focus:ring-pba-blue rounded-lg text-sm"
+                          className="border-gray-200 focus:border-pba-cyan focus:ring-2 focus:ring-pba-cyan rounded-lg text-sm"
                         />
                       </div>
                     </CardContent>

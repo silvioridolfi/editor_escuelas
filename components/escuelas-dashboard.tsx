@@ -80,7 +80,7 @@ export default function EscuelasDashboard() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="pl-12 h-14 rounded-xl bg-gray-100 focus:bg-white transition-colors duration-200 border-gray-200 focus:border-pba-cyan focus:ring-pba-blue text-lg"
+                  className="pl-12 h-14 rounded-xl bg-gray-100 focus:bg-white transition-colors duration-200 border-gray-200 focus:border-pba-cyan focus:ring-2 focus:ring-pba-cyan text-lg"
                 />
                 <Search className="absolute left-4 top-4 h-6 w-6 text-gray-400" />
               </div>

@@ -152,7 +152,7 @@ export default function DatosGeneralesForm({ datos, onChange }: DatosGeneralesFo
                           placeholder={field.placeholder}
                           value={datos[field.name as keyof Establecimiento] || ""}
                           onChange={handleChange}
-                          className={`border-gray-200 focus:border-pba-cyan focus:ring-pba-blue rounded-lg text-sm ${
+                          className={`border-gray-200 focus:border-pba-cyan focus:ring-2 focus:ring-pba-cyan rounded-lg text-sm ${
                             field.readonly
                               ? "bg-gray-100 text-gray-500"
                               : field.name === "nombre" && field.editable
@@ -274,7 +274,7 @@ export default function DatosGeneralesForm({ datos, onChange }: DatosGeneralesFo
                 rows={4}
                 value={datos.observaciones || ""}
                 onChange={handleChange}
-                className="border-gray-200 focus:border-pba-cyan focus:ring-pba-blue rounded-lg bg-gray-100 focus:bg-white transition-colors duration-200"
+                className="border-gray-200 focus:border-pba-cyan focus:ring-2 focus:ring-pba-cyan rounded-lg bg-gray-100 focus:bg-white transition-colors duration-200"
                 placeholder="Observaciones adicionales sobre el establecimiento..."
               />
             </div>

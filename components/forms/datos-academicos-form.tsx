@@ -118,7 +118,7 @@ export default function DatosAcademicosForm({ datos, onChange }: DatosAcademicos
                             placeholder={field.placeholder}
                             value={datos[field.name as keyof Establecimiento] || ""}
                             onChange={handleChange}
-                            className="border-gray-200 focus:border-pba-cyan focus:ring-pba-blue rounded-lg text-sm"
+                            className="border-gray-200 focus:border-pba-cyan focus:ring-2 focus:ring-pba-cyan rounded-lg text-sm"
                           />
                         )}
                       </div>

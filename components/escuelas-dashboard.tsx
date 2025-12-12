@@ -58,6 +58,28 @@ export default function EscuelasDashboard() {
     setEscuelaSeleccionada(null)
   }
 
+  const handleEscuelaUpdated = (updatedEstablecimiento: any) => {
+    setResultados((prevResultados) =>
+      prevResultados.map((e) =>
+        e.id === updatedEstablecimiento.id
+          ? {
+              ...e,
+              ...updatedEstablecimiento,
+              categoria_conectividad: e.categoria_conectividad,
+            }
+          : e,
+      ),
+    )
+
+    if (escuelaSeleccionada && escuelaSeleccionada.id === updatedEstablecimiento.id) {
+      setEscuelaSeleccionada({
+        ...escuelaSeleccionada,
+        ...updatedEstablecimiento,
+        categoria_conectividad: escuelaSeleccionada.categoria_conectividad,
+      })
+    }
+  }
+
   const handleNuevoEstablecimientoCreado = async () => {
     setMostrarNuevoForm(false)
     // Refrescar búsqueda si hay un término activo
@@ -210,8 +232,9 @@ export default function EscuelasDashboard() {
               transition={{ duration: 0.4 }}
             >
               <EscuelaDetalles
-                escuelaId={escuelaSeleccionada.id}
+                escuela={escuelaSeleccionada}
                 onClose={handleCloseDetalles}
+                onUpdate={handleEscuelaUpdated}
                 onDelete={handleEscuelaDeleted}
               />
             </motion.div>

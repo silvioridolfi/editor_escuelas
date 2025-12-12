@@ -18,7 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import type { Establecimiento, Contacto } from "@/types/escuelas"
+import type { Establecimiento, Contacto, EstablecimientoConectividad } from "@/types/escuelas"
 import {
   obtenerDetallesEscuela,
   actualizarDatosGenerales,
@@ -31,9 +31,9 @@ import DatosAcademicosForm from "@/components/forms/datos-academicos-form"
 import ProgramasEducativosForm from "@/components/forms/programas-educativos-form"
 
 interface EscuelaDetallesProps {
-  escuela: Establecimiento
+  escuela: EstablecimientoConectividad
   onClose: () => void
-  onUpdate: (escuela: Establecimiento) => void
+  onUpdate: (escuela: any) => void
   onDelete: (id: string) => void
 }
 
@@ -41,7 +41,7 @@ export default function EscuelaDetalles({ escuela, onClose, onUpdate, onDelete }
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("datos-generales")
-  const [datosGenerales, setDatosGenerales] = useState<Establecimiento>(escuela)
+  const [datosGenerales, setDatosGenerales] = useState<Establecimiento | null>(null)
   const [contacto, setContacto] = useState<Contacto | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -74,7 +74,18 @@ export default function EscuelaDetalles({ escuela, onClose, onUpdate, onDelete }
     }
   }, [escuela.id, toast, mounted])
 
+  // Guard clause to prevent crashes when escuela or escuela.id is undefined
+  if (!escuela || !escuela.id) {
+    console.error("[v0] EscuelaDetalles: escuela or escuela.id is undefined")
+    return null
+  }
+
   const handleSaveChanges = async () => {
+    if (!datosGenerales) {
+      console.error("[v0] handleSaveChanges: datosGenerales is null")
+      return
+    }
+
     setIsSaving(true)
     try {
       const updatedEstablecimiento = await actualizarDatosGenerales(datosGenerales.id, datosGenerales)
@@ -127,7 +138,7 @@ export default function EscuelaDetalles({ escuela, onClose, onUpdate, onDelete }
     }
   }
 
-  if (!mounted || isLoading) {
+  if (!mounted || isLoading || !datosGenerales) {
     return (
       <Card className="rounded-2xl shadow-lg border-0 bg-white backdrop-blur-sm">
         <CardHeader>
@@ -145,6 +156,8 @@ export default function EscuelaDetalles({ escuela, onClose, onUpdate, onDelete }
   ]
 
   const renderTabContent = () => {
+    if (!datosGenerales) return null
+
     switch (activeTab) {
       case "datos-generales":
         return <DatosGeneralesForm datos={datosGenerales} onChange={setDatosGenerales} />
@@ -176,7 +189,6 @@ export default function EscuelaDetalles({ escuela, onClose, onUpdate, onDelete }
     }
   }
 
-  // Usar alias si está disponible, sino el nombre completo
   const nombreMostrar = datosGenerales.alias || datosGenerales.nombre || "Sin nombre"
 
   return (
